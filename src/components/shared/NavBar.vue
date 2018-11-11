@@ -77,7 +77,7 @@
     >
       <v-toolbar-title class="ml-0 pl-3">
         <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-        <router-link class="link-reset hidden-sm-and-down" :to="{ name: 'HelloWorld' }">
+        <router-link class="link-reset hidden-sm-and-down" :to="{ name: 'Subjects' }">
           GET
         </router-link>
       </v-toolbar-title>
@@ -88,45 +88,45 @@
 
 <script>
 export default {
-  name: 'navbar',
-  data () {
+  name: "navbar",
+  data() {
     return {
       drawer: null,
       items: [
         {
-          icon: 'school',
-          text: 'Subjects',
+          icon: "school",
+          text: "Subjects",
           model: true,
           to: {
-            name: 'Subjects'
+            name: "Subjects"
           }
         },
         {
-          icon: 'person',
-          text: 'Proffesors',
+          icon: "person",
+          text: "Proffesors",
           model: false,
           to: {
-            name: 'Proffesors'
+            name: "Proffesors"
           }
         },
         {
-          icon: 'people',
-          text: 'Students',
+          icon: "people",
+          text: "Students",
           model: false,
           to: {
-            name: 'Students'
+            name: "Students"
           }
         },
         {
-          icon: 'school',
-          text: 'Exams',
+          icon: "school",
+          text: "Exams",
           model: true,
           to: {
-            name: 'Exams'
+            name: "Exams"
           }
-        },
+        }
       ]
-    }
+    };
   }
-}
+};
 </script>

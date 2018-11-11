@@ -59,7 +59,7 @@
                     <v-pagination
                         v-model="page"
                         @input="changePage"
-                        color="orange"
+                        color="warning"
                         :length="totalPages"
                     ></v-pagination>
                 </v-flex>
@@ -76,62 +76,63 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 
 export default {
-    data () {
-        return {
-            dialog: true,
-            proffesor: {
-                firstName: '',
-                lastName: '',
-                subjects: []
-            },
-            page: 1,
-            size: 3
-        }
+  data() {
+    return {
+      dialog: true,
+      proffesor: {
+        firstName: "",
+        lastName: "",
+        subjects: []
+      },
+      page: 1,
+      size: 3
+    };
+  },
+  computed: {
+    ...mapGetters("2", {
+      subjects: "getSubjects",
+      totalPages: "getTotalPages"
+    })
+  },
+  methods: {
+    closeModal() {
+      this.dialog = false;
+      this.$emit("close");
     },
-    computed: {
-      ...mapGetters('2', {
-        subjects: 'getSubjects',
-        totalPages: 'getTotalPages'
-      })
+    save() {
+      this.$store
+        .dispatch("1/createProffesor", this.proffesor)
+        .then(response => {
+          this.$emit("close");
+        })
+        .catch(error => {
+          console.log(error);
+        });
     },
-    methods: {
-        closeModal () {
-            this.dialog = false
-            this.$emit('close')
-        },
-        save () {
-            this.$store.dispatch('1/createProffesor', this.proffesor)
-                .then(response => {
-                    this.$emit('close')
-                })
-                .catch(error => {
-                    console.log(error)
-                })
-        },
-        addSubject (index) {
-            this.proffesor.subjects.push(index)
-        },
-        removeSubject (index) {
-            var elPosition = this.proffesor.subjects.indexOf(index);
-            if (elPosition > -1) {
-                this.proffesor.subjects.splice(elPosition, 1);
-            }
-        },
-        changePage () {
-            console.log('clicked')
-            this.loadData()
-        },
-        loadData () {
-            let pageable = {page: this.page - 1, size: this.size}
-            this.$store.dispatch('2/setPageable', pageable)
-            this.$store.dispatch('2/loadAll')
-        }
+    addSubject(index) {
+      this.proffesor.subjects.push(index);
     },
-    mounted: function () {
-        this.loadData()
+    removeSubject(index) {
+      var elPosition = this.proffesor.subjects.indexOf(index);
+      if (elPosition > -1) {
+        this.proffesor.subjects.splice(elPosition, 1);
+      }
+    },
+    changePage() {
+      console.log("clicked");
+      this.loadData();
+    },
+    loadData() {
+      let pageable = { page: this.page - 1, size: this.size };
+      this.$store.dispatch("2/setPageable", pageable);
+      this.$store.dispatch("2/loadAll");
     }
-}
+  },
+  mounted: function() {
+    this.loadData();
+  }
+};
 </script>

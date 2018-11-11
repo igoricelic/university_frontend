@@ -9,6 +9,59 @@
                 </v-btn>
                 <span>Create new exam</span>
                 </v-tooltip>
+                <v-layout row>
+                    <v-flex md12>
+                        <v-layout>
+                            <v-text-field
+                            type="text"
+                            @input="filter"
+                            name="proffesorName"
+                            label="Proffesor name"
+                            prepend-icon="info"
+                            clearable
+                            ></v-text-field>
+
+                            <v-menu
+                                :close-on-content-click="false"
+                                v-model="startIntervalDateMenu"
+                                lazy
+                                transition="scale-transition"
+                                offset-y
+                                full-width
+                            >
+                                <v-text-field
+                                slot="activator"
+                                v-model="filters.startIntervalDate"
+                                label="Start interval"
+                                prepend-icon="event"
+                                readonly
+                                clearable
+                                ></v-text-field>
+                                <v-date-picker v-model="filters.startIntervalDate" @input="startIntervalDateMenu = false; filter()"></v-date-picker>
+                            </v-menu>
+
+                            <v-menu
+                                :close-on-content-click="false"
+                                v-model="endIntervalDateMenu"
+                                lazy
+                                transition="scale-transition"
+                                offset-y
+                                full-width
+                            >
+                                <v-text-field
+                                slot="activator"
+                                v-model="filters.endIntervalDate"
+                                label="End interval"
+                                prepend-icon="event"
+                                readonly
+                                clearable
+                                ></v-text-field>
+                                <v-date-picker v-model="filters.endIntervalDate" @input="endIntervalDateMenu = false; filter()"></v-date-picker>
+                            </v-menu>
+                        </v-layout>
+                    </v-flex>
+                </v-layout>
+
                 <v-data-table
                     :headers="headers"
                     :items="exams"
@@ -38,54 +91,71 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import paginationMixin from '@/components/shared/PaginationMixin'
-import CreateExamModal from './CreateExamModal'
+import { mapGetters } from "vuex";
+import paginationMixin from "@/components/shared/PaginationMixin";
+import CreateExamModal from "./CreateExamModal";
 
 export default {
-    mixins: [ paginationMixin ],
-    components: {
-        'create-exam-modal': CreateExamModal
-    },
-    data () {
-        return {
-            headers: [
-                { text: 'Student index', value: 'index', sortable: true },
-                { text: 'Student last name', value: 'lastName', sortable: false },
-                { text: 'School year', value: 'schoolYear', sortable: true },
-                { text: 'Subject name', value: 'subjectName', sortable: false },
-                { text: 'Proffesor last name', value: 'proffesorLastName', sortable: false },
-                { text: 'Result', value: 'result', sortable: false }
-            ],
-            rowPerPageItems: [ 10, 25, 50 ],
-            rowPerPageText: 'Subjects per page:',
-            noDataText: 'No available content',
-            showCreateExamModal: false,
-            page: 0,
-            size: 50
-        }
-    },
-    methods: {
-        openCreateExamModal () {
-            this.showCreateExamModal = true
+  mixins: [paginationMixin],
+  components: {
+    "create-exam-modal": CreateExamModal
+  },
+  data() {
+    return {
+      headers: [
+        { text: "Student index", value: "index", sortable: true },
+        { text: "Student last name", value: "lastName", sortable: false },
+        { text: "School year", value: "schoolYear", sortable: true },
+        { text: "Subject name", value: "subjectName", sortable: false },
+        {
+          text: "Proffesor last name",
+          value: "proffesorLastName",
+          sortable: false
         },
-        closeCreateExamModal () {
-            this.loadData()
-            this.showCreateExamModal = false
-        },
-        loadData () {
-            let pageable = {page: this.page, size: this.size}
-            this.$store.dispatch('3/setPageable', pageable)
-            this.$store.dispatch('3/loadAll')
-        }
+        { text: "Result", value: "result", sortable: false }
+      ],
+      rowPerPageItems: [10, 25, 50],
+      rowPerPageText: "Subjects per page:",
+      noDataText: "No available content",
+      showCreateExamModal: false,
+      page: 0,
+      size: 50,
+      filters: {
+        startIntervalDate: "",
+        endIntervalDate: ""
+      },
+      startIntervalDateMenu: false,
+      endIntervalDateMenu: false
+    };
+  },
+  methods: {
+    openCreateExamModal() {
+      this.showCreateExamModal = true;
     },
-    computed: {
-      ...mapGetters('3', {
-        exams: 'getExams',
-      })
+    closeCreateExamModal() {
+      this.loadData();
+      this.showCreateExamModal = false;
     },
-    mounted: function () {
-        this.loadData()
+    loadData() {
+      let pageable = { page: this.page, size: this.size };
+      this.$store.dispatch("3/setPageable", pageable);
+      this.$store.dispatch("3/loadAll");
+    },
+    filter() {
+      let params = {
+        dateAndTime: this.filters.startIntervalDate,
+        dateAndTime: this.filters.endIntervalDate
+      };
+      console.log(params);
     }
-}
+  },
+  computed: {
+    ...mapGetters("3", {
+      exams: "getExams"
+    })
+  },
+  mounted: function() {
+    this.loadData();
+  }
+};
 </script>
