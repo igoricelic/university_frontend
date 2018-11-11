@@ -9,6 +9,22 @@
                 </v-btn>
                 <span>Create new subject</span>
                 </v-tooltip>
+                <v-layout row>
+                    <v-flex md4>
+                        <v-layout>
+                            <v-text-field
+                            type="text"
+                            @input="filter"
+                            v-model="filters.name"
+                            name="name"
+                            label="Name"
+                            prepend-icon="info"
+                            clearable
+                            ></v-text-field>
+                        </v-layout>
+                    </v-flex>
+                </v-layout>
+
                 <v-data-table
                     :headers="headers"
                     :items="subjects"
@@ -34,50 +50,61 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import paginationMixin from '@/components/shared/PaginationMixin'
-import CreateSubjectsModal from './CreateSubjectsModal'
+import { mapGetters } from "vuex";
+import paginationMixin from "@/components/shared/PaginationMixin";
+import CreateSubjectsModal from "./CreateSubjectsModal";
 
 export default {
-    mixins: [ paginationMixin ],
-    components: {
-        'create-subjects-modal': CreateSubjectsModal
+  mixins: [paginationMixin],
+  components: {
+    "create-subjects-modal": CreateSubjectsModal
+  },
+  data() {
+    return {
+      headers: [
+        { text: "Name", value: "name", sortable: true },
+        { text: "Description", value: "description", sortable: false }
+      ],
+      rowPerPageItems: [10, 25, 50],
+      rowPerPageText: "Subjects per page:",
+      noDataText: "No available content",
+      showCreateSubjectModal: false,
+      page: 0,
+      size: 10,
+      filters: {
+        name: ""
+      }
+    };
+  },
+  methods: {
+    openCreateSubjectModal() {
+      this.showCreateSubjectModal = true;
     },
-    data () {
-        return {
-            headers: [
-                { text: 'Name', value: 'name', sortable: true },
-                { text: 'Description', value: 'description', sortable: false }
-            ],
-            rowPerPageItems: [ 10, 25, 50 ],
-            rowPerPageText: 'Subjects per page:',
-            noDataText: 'No available content',
-            showCreateSubjectModal: false,
-            page: 0,
-            size: 10
-        }
+    closeCreateSubjectModal() {
+      this.loadData();
+      this.showCreateSubjectModal = false;
     },
-    methods: {
-        openCreateSubjectModal () {
-            this.showCreateSubjectModal = true
-        },
-        closeCreateSubjectModal () {
-            this.loadData()
-            this.showCreateSubjectModal = false
-        },
-        loadData () {
-            let pageable = {page: this.page, size: this.size}
-            this.$store.dispatch('2/setPageable', pageable)
-            this.$store.dispatch('2/loadAll')
-        }
+    loadData() {
+      let pageable = { page: this.page, size: this.size };
+      this.$store.dispatch("2/setPageable", pageable);
+      this.$store.dispatch("2/loadAll");
     },
-    computed: {
-      ...mapGetters('2', {
-        subjects: 'getSubjects',
-      })
-    },
-    mounted: function () {
-        this.loadData()
+    filter() {
+      let params = {
+        page: this.page,
+        size: this.size,
+        name: this.filters.name
+      };
+      this.$store.dispatch("2/loadAll", params);
     }
-}
+  },
+  computed: {
+    ...mapGetters("2", {
+      subjects: "getSubjects"
+    })
+  },
+  mounted: function() {
+    this.loadData();
+  }
+};
 </script>

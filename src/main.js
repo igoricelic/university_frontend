@@ -4,6 +4,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import store from './store'
+import moment from 'moment'
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
 import 'material-design-icons-iconfont/dist/material-design-icons.css' // Ensure you are using css-loader
@@ -11,6 +12,12 @@ import 'material-design-icons-iconfont/dist/material-design-icons.css' // Ensure
 Vue.config.productionTip = false
 
 Vue.use(Vuetify)
+
+Vue.filter('formatDate', function (value) {
+  if (value) {
+    return moment(String(value)).format('MM/DD/YYYY')
+  }
+})
 
 /* eslint-disable no-new */
 new Vue({

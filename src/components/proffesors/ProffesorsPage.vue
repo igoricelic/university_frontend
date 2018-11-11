@@ -9,6 +9,32 @@
                 </v-btn>
                 <span>Create new proffesor</span>
                 </v-tooltip>
+                 <v-layout row>
+                    <v-flex md8>
+                        <v-layout>
+                            <v-text-field
+                            type="text"
+                            @input="filter"
+                            v-model="filters.firstName"
+                            name="firstName"
+                            label="First name"
+                            prepend-icon="info"
+                            clearable
+                            ></v-text-field>
+
+                            <v-text-field
+                            type="text"
+                            @input="filter"
+                            v-model="filters.lastName"
+                            name="lastName"
+                            label="Last name"
+                            prepend-icon="info"
+                            clearable
+                            ></v-text-field>
+                        </v-layout>
+                    </v-flex>
+                 </v-layout>
+
                 <v-data-table
                     :headers="headers"
                     :items="proffesors"
@@ -50,62 +76,78 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import paginationMixin from '@/components/shared/PaginationMixin'
-import CreateProffesorModal from './CreateProffesorModal'
-import ProffesorDetailsModal from './ProffesorDetailsModal'
+import { mapGetters } from "vuex";
+import paginationMixin from "@/components/shared/PaginationMixin";
+import CreateProffesorModal from "./CreateProffesorModal";
+import ProffesorDetailsModal from "./ProffesorDetailsModal";
 
 export default {
-    mixins: [ paginationMixin ],
-    components: {
-        'create-proffesor-modal': CreateProffesorModal,
-        'proffesor-details-modal': ProffesorDetailsModal
+  mixins: [paginationMixin],
+  components: {
+    "create-proffesor-modal": CreateProffesorModal,
+    "proffesor-details-modal": ProffesorDetailsModal
+  },
+  data() {
+    return {
+      headers: [
+        { text: "First Name", value: "firstName", sortable: true },
+        { text: "Last Name", value: "lastName", sortable: true },
+        { text: "Total subjects", value: "totalSubjects", sortable: true },
+        { text: "Details", value: "details", sortable: false }
+      ],
+      rowPerPageItems: [10, 25, 50],
+      rowPerPageText: "Proffesors per page:",
+      noDataText: "No available content",
+      currProffesor: {},
+      showCreateProffesorModal: false,
+      showProffesorDetailsModal: false,
+      page: 0,
+      size: 10,
+      filters: {
+        firstName: "",
+        lastName: ""
+      }
+    };
+  },
+  methods: {
+    openCreateProffesorModal() {
+      this.showCreateProffesorModal = true;
+      console.log(this.showCreateProffesorModal);
     },
-    data () {
-        return {
-            headers: [
-                { text: 'First Name', value: 'firstName', sortable: true },
-                { text: 'Last Name', value: 'lastName', sortable: true },
-                { text: 'Total subjects', value: 'totalSubjects', sortable: true },
-                { text: 'Details', value: 'details', sortable: false }
-            ],
-            rowPerPageItems: [ 10, 25, 50 ],
-            rowPerPageText: 'Proffesors per page:',
-            noDataText: 'No available content',
-            currProffesor: {},
-            showCreateProffesorModal: false,
-            showProffesorDetailsModal: false
-        }
+    closeCreateProffesorModal() {
+      this.showCreateProffesorModal = false;
     },
-    methods: {
-        openCreateProffesorModal () {
-            this.showCreateProffesorModal = true
-            console.log(this.showCreateProffesorModal)
-        },
-        closeCreateProffesorModal () {
-            this.showCreateProffesorModal = false
-        },
-        openProffesorDetailsModal (id) {
-            this.$store.dispatch('1/loadById', id)
-            .then(response => {
-                this.currProffesor = response
-                this.showProffesorDetailsModal = true
-            })
-            .catch(error => {
-                console.log(error)
-            })
-        },
-        closeProffesorDetailsModal () {
-            this.showProffesorDetailsModal = false
-        }
+    openProffesorDetailsModal(id) {
+      this.$store
+        .dispatch("1/loadById", id)
+        .then(response => {
+          this.currProffesor = response;
+          this.showProffesorDetailsModal = true;
+        })
+        .catch(error => {
+          console.log(error);
+        });
     },
-    computed: {
-      ...mapGetters('1', {
-        proffesors: 'getProffesors',
-      })
+    closeProffesorDetailsModal() {
+      this.showProffesorDetailsModal = false;
     },
-    mounted: function () {
-        this.$store.dispatch('1/loadAll')
+    filter() {
+      let params = {
+        page: this.page,
+        size: this.size,
+        firstName: this.filters.firstName,
+        lastName: this.filters.lastName
+      };
+      this.$store.dispatch("1/loadAll", params);
     }
-}
+  },
+  computed: {
+    ...mapGetters("1", {
+      proffesors: "getProffesors"
+    })
+  },
+  mounted: function() {
+    this.$store.dispatch("1/loadAll");
+  }
+};
 </script>

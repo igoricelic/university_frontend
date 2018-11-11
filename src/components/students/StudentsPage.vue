@@ -4,11 +4,47 @@
             <div>
                 <h1>Students</h1>
                 <v-tooltip left>
-                <v-btn class="right" slot="activator" small fab color="orange" @click="openCreateStudentModal">
-                    <v-icon color="white">add</v-icon>
-                </v-btn>
-                <span>Create new student</span>
+                    <v-btn class="right" slot="activator" small fab color="orange" @click="openCreateStudentModal">
+                        <v-icon color="white">add</v-icon>
+                    </v-btn>
+                    <span>Create new student</span>
                 </v-tooltip>
+                <v-layout row>
+                    <v-flex md12>
+                        <v-layout>
+                            <v-text-field
+                            type="text"
+                            @input="filter"
+                            v-model="filters.index"
+                            name="index"
+                            label="Index"
+                            prepend-icon="info"
+                            clearable
+                            ></v-text-field>
+
+                            <v-text-field
+                            type="text"
+                            @input="filter"
+                            v-model="filters.firstName"
+                            name="index"
+                            label="First name"
+                            prepend-icon="info"
+                            clearable
+                            ></v-text-field>
+
+                            <v-text-field
+                            type="text"
+                            @input="filter"
+                            v-model="filters.lastName"
+                            name="index"
+                            label="Last name"
+                            prepend-icon="info"
+                            clearable
+                            ></v-text-field>
+                        </v-layout>
+                    </v-flex>
+                </v-layout>
+
                 <v-data-table
                     :headers="headers"
                     :items="students"
@@ -22,6 +58,14 @@
                         <td class="text-xs-left">{{ props.item.index }}</td>
                         <td class="text-xs-left">{{ props.item.firstName }}</td>
                         <td class="text-xs-left">{{ props.item.lastName }}</td>
+                        <td>
+                            <v-tooltip top>
+                                <v-btn slot="activator" fab small color="orange" @click="openStudentDetailsModal(props.item.id)">
+                                    <v-icon color="white">school</v-icon>
+                                </v-btn>
+                                <span>Show details for student</span>
+                            </v-tooltip>
+                        </td>
                     </template>
                 </v-data-table>
 
@@ -29,50 +73,92 @@
                 v-if="showCreateStudentModal"
                 @close="closeCreateStudentModal"
                 ></create-student-modal>
+
+                <student-details-modal
+                v-if="showDetailsStudentModal"
+                :currStudent="currStudent"
+                @close="closeStudentDetailsModal"
+                ></student-details-modal>
             </div>
         </v-flex>
     </v-layout>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import paginationMixin from '@/components/shared/PaginationMixin'
-import CreateStudentModal from './CreateStudentModal'
+import { mapGetters } from "vuex";
+import paginationMixin from "@/components/shared/PaginationMixin";
+import CreateStudentModal from "./CreateStudentModal";
+import StudentDetailsModal from "./StudentDetailsModal";
 
 export default {
-    mixins: [ paginationMixin ],
-    components: {
-        'create-student-modal': CreateStudentModal
+  mixins: [paginationMixin],
+  components: {
+    "create-student-modal": CreateStudentModal,
+    "student-details-modal": StudentDetailsModal
+  },
+  data() {
+    return {
+      headers: [
+        { text: "Index", value: "index", sortable: true },
+        { text: "First Name", value: "firstName", sortable: true },
+        { text: "Last Name", value: "lastName", sortable: true },
+        { text: "Details", value: "details", sortable: false }
+      ],
+      rowPerPageItems: [10, 25, 50],
+      rowPerPageText: "Students per page:",
+      noDataText: "No available content",
+      showCreateStudentModal: false,
+      showDetailsStudentModal: false,
+      currStudent: {},
+      page: 0,
+      size: 10,
+      filters: {
+        index: "",
+        firstName: "",
+        lastName: ""
+      }
+    };
+  },
+  methods: {
+    openCreateStudentModal() {
+      this.showCreateStudentModal = true;
+      console.log(this.showCreateStudentModal);
     },
-    data () {
-        return {
-            headers: [
-                { text: 'Index', value: 'index', sortable: true },
-                { text: 'First Name', value: 'firstName', sortable: true },
-                { text: 'Last Name', value: 'lastName', sortable: true }
-            ],
-            rowPerPageItems: [ 10, 25, 50 ],
-            rowPerPageText: 'Students per page:',
-            noDataText: 'No available content',
-            showCreateStudentModal: false
-        }
+    closeCreateStudentModal() {
+      this.showCreateStudentModal = false;
     },
-    methods: {
-        openCreateStudentModal () {
-            this.showCreateStudentModal = true
-            console.log(this.showCreateStudentModal)
-        },
-        closeCreateStudentModal () {
-            this.showCreateStudentModal = false
-        }
+    openStudentDetailsModal(id) {
+      this.$store
+        .dispatch("0/loadById", id)
+        .then(response => {
+          this.currStudent = response;
+          this.showDetailsStudentModal = true;
+        })
+        .catch(error => {
+          console.log(error);
+        });
     },
-    computed: {
-      ...mapGetters('0', {
-        students: 'getStudents',
-      })
+    closeStudentDetailsModal() {
+      this.showDetailsStudentModal = false;
     },
-    mounted: function () {
-        this.$store.dispatch('0/loadAll')
+    filter() {
+      let params = {
+        page: this.page,
+        size: this.size,
+        firstName: this.filters.firstName,
+        lastName: this.filters.lastName,
+        index: this.filters.index
+      };
+      this.$store.dispatch("0/loadAll", params);
     }
-}
+  },
+  computed: {
+    ...mapGetters("0", {
+      students: "getStudents"
+    })
+  },
+  mounted: function() {
+    this.$store.dispatch("0/loadAll");
+  }
+};
 </script>
