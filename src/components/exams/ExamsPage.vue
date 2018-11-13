@@ -15,6 +15,7 @@
                             <v-text-field
                             type="text"
                             @input="filter"
+                            v-model="filters.proffesorLastName"
                             name="proffesorName"
                             label="Proffesor name"
                             prepend-icon="info"
@@ -74,9 +75,9 @@
                     <template slot="items" slot-scope="props">
                         <td class="text-xs-left">{{ props.item.studentResponseDto.index }}</td>
                         <td class="text-xs-left">{{ props.item.studentResponseDto.lastName }}</td>
-                        <td class="text-xs-left">{{ props.item.schoolYear }}</td>
                         <td class="text-xs-left">{{ props.item.subject.name }}</td>
                         <td class="text-xs-left">{{ props.item.proffesor.lastName }}</td>
+                        <td class="text-xs-left">{{ props.item.dateTime | formatDate }}</td>
                         <td class="text-xs-left">{{ props.item.success }}</td>
                     </template>
                 </v-data-table>
@@ -105,13 +106,13 @@ export default {
       headers: [
         { text: "Student index", value: "index", sortable: true },
         { text: "Student last name", value: "lastName", sortable: false },
-        { text: "School year", value: "schoolYear", sortable: true },
         { text: "Subject name", value: "subjectName", sortable: false },
         {
           text: "Proffesor last name",
           value: "proffesorLastName",
           sortable: false
         },
+        { text: "Date", value: "dateTime", sortable: true },
         { text: "Result", value: "result", sortable: false }
       ],
       rowPerPageItems: [10, 25, 50],
@@ -122,7 +123,8 @@ export default {
       size: 50,
       filters: {
         startIntervalDate: "",
-        endIntervalDate: ""
+        endIntervalDate: "",
+        proffesorLastName: ""
       },
       startIntervalDateMenu: false,
       endIntervalDateMenu: false
@@ -142,11 +144,15 @@ export default {
       this.$store.dispatch("3/loadAll");
     },
     filter() {
-      let params = {
-        dateAndTime: this.filters.startIntervalDate,
-        dateAndTime: this.filters.endIntervalDate
-      };
-      console.log(params);
+      console.log("pozvan");
+      // let path = `page=${this.page}&size=${this.size}&proffesor.lastName=${
+      //   this.filters.proffesorLastName
+      // }`;
+      // if (this.filters.startIntervalDate)
+      //   path = `${path}&dateAndTime=${this.filters.startIntervalDate}`;
+      // if (this.filters.endIntervalDate)
+      //   path = `${path}&dateAndTime=${this.filters.endIntervalDate}`;
+      // this.$store.dispatch("3/loadByPath", path);
     }
   },
   computed: {
