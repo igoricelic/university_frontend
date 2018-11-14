@@ -83,85 +83,86 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 
 export default {
-    data () {
-        return {
-            dialog: true,
-            selectedSubject: {},
-            selectedProffesor: {},
-            selectedStudent: {},
-            selectedSchoolYears: {},
-            page: 1,
-            size: 3,
-            result: false
+  data() {
+    return {
+      dialog: true,
+      selectedSubject: {},
+      selectedProffesor: {},
+      selectedStudent: {},
+      selectedSchoolYears: {},
+      page: 1,
+      size: 3,
+      result: false
+    };
+  },
+  computed: {
+    ...mapGetters({
+      subjects: "subjects/getSubjects",
+      proffesors: "proffesors/getProffesors",
+      students: "students/getStudents",
+      schoolYears: "schoolYear/getSchoolYears",
+      totalPages: "getTotalPages"
+    })
+  },
+  methods: {
+    closeModal() {
+      this.dialog = false;
+      this.$emit("close");
+    },
+    save() {
+      let studentId = null;
+      this.students.forEach(element => {
+        if (element.index === this.selectedStudent) {
+          studentId = element.id;
         }
-    },
-    computed: {
-      ...mapGetters({
-        subjects: '2/getSubjects',
-        proffesors: '1/getProffesors',
-        students: '0/getStudents',
-        schoolYears: '4/getSchoolYears',
-        totalPages: 'getTotalPages'
-      })
-    },
-    methods: {
-        closeModal () {
-            this.dialog = false
-            this.$emit('close')
-        },
-        save () {
-            let studentId = null;
-            this.students.forEach(element => {
-                if(element.index === this.selectedStudent) {
-                    studentId =  element.id
-                }
-            });
-            let proffesorId = null;
-            this.proffesors.forEach(element => {
-                if(element.lastName === this.selectedProffesor) {
-                    proffesorId =  element.id
-                }
-            });
-            let subjectId = null;
-            this.subjects.forEach(element => {
-                if(element.name === this.selectedSubject) {
-                    subjectId =  element.id
-                }
-            });
-            let schoolYearId = null;
-            this.schoolYears.forEach(element => {
-                if(element.schoolYear === this.selectedSchoolYears) {
-                    schoolYearId =  element.id
-                }
-            });
-            let createExamDto = {
-                studentId: studentId,
-                proffesorId: proffesorId,
-                subjectId: subjectId,
-                schoolYearId: schoolYearId,
-                result: this.result
-            }
+      });
+      let proffesorId = null;
+      this.proffesors.forEach(element => {
+        if (element.lastName === this.selectedProffesor) {
+          proffesorId = element.id;
+        }
+      });
+      let subjectId = null;
+      this.subjects.forEach(element => {
+        if (element.name === this.selectedSubject) {
+          subjectId = element.id;
+        }
+      });
+      let schoolYearId = null;
+      this.schoolYears.forEach(element => {
+        if (element.schoolYear === this.selectedSchoolYears) {
+          schoolYearId = element.id;
+        }
+      });
+      let createExamDto = {
+        studentId: studentId,
+        proffesorId: proffesorId,
+        subjectId: subjectId,
+        schoolYearId: schoolYearId,
+        result: this.result
+      };
 
-            this.$store.dispatch('3/createExam', createExamDto)
-                .then(response => {
-                    this.$emit('close')
-                })
-                .catch(error => {
-                    console.log(error)
-                })
-        },
-        loadData () {
-            this.$store.dispatch('0/loadAll')
-            this.$store.dispatch('1/loadAll')
-            this.$store.dispatch('2/loadAll')
-            this.$store.dispatch('4/loadAll')
-        }
+      this.$store
+        .dispatch("exams/createExam", createExamDto)
+        .then(response => {
+          this.$emit("close");
+        })
+        .catch(error => {
+          console.log(error);
+        });
     },
-    mounted: function () {
-        this.loadData()
+    loadData() {
+      this.$store.dispatch("students/loadAll");
+      this.$store.dispatch("proffesors/loadAll");
+      this.$store.dispatch("subjects/loadAll");
+      this.$store.dispatch("schoolYear/loadAll");
     }
-}
+  },
+  mounted: function() {
+    this.loadData();
+  }
+};
 </script>

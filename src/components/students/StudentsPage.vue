@@ -129,7 +129,7 @@ export default {
     },
     openStudentDetailsModal(id) {
       this.$store
-        .dispatch("0/loadById", id)
+        .dispatch("students/loadById", id)
         .then(response => {
           this.currStudent = response;
           this.showDetailsStudentModal = true;
@@ -149,16 +149,16 @@ export default {
         lastName: this.filters.lastName,
         index: this.filters.index
       };
-      this.$store.dispatch("0/loadAll", params);
+      this.$store.dispatch("students/loadAll", params);
     }
   },
   computed: {
-    ...mapGetters("0", {
+    ...mapGetters("students", {
       students: "getStudents"
     })
   },
   mounted: function() {
-    this.$store.dispatch("0/loadAll");
+    this.$store.dispatch("students/loadAll");
   }
 };
 </script>

@@ -119,7 +119,7 @@ export default {
     },
     openProffesorDetailsModal(id) {
       this.$store
-        .dispatch("1/loadById", id)
+        .dispatch("proffesors/loadById", id)
         .then(response => {
           this.currProffesor = response;
           this.showProffesorDetailsModal = true;
@@ -138,16 +138,16 @@ export default {
         firstName: this.filters.firstName,
         lastName: this.filters.lastName
       };
-      this.$store.dispatch("1/loadAll", params);
+      this.$store.dispatch("proffesors/loadAll", params);
     }
   },
   computed: {
-    ...mapGetters("1", {
+    ...mapGetters("proffesors", {
       proffesors: "getProffesors"
     })
   },
   mounted: function() {
-    this.$store.dispatch("1/loadAll");
+    this.$store.dispatch("proffesors/loadAll");
   }
 };
 </script>

@@ -50,29 +50,30 @@
 
 <script>
 export default {
-    data () {
-        return {
-            dialog: true,
-            subject: {
-                name: '',
-                description: ''
-            }
-        }
+  data() {
+    return {
+      dialog: true,
+      subject: {
+        name: "",
+        description: ""
+      }
+    };
+  },
+  methods: {
+    closeModal() {
+      this.dialog = false;
+      this.$emit("close");
     },
-    methods: {
-        closeModal () {
-            this.dialog = false
-            this.$emit('close')
-        },
-        save () {
-            this.$store.dispatch('2/createSubject', this.subject)
-                .then(response => {
-                    this.$emit('close')
-                })
-                .catch(error => {
-                    console.log(error)
-                })
-        }
+    save() {
+      this.$store
+        .dispatch("subjects/createSubject", this.subject)
+        .then(response => {
+          this.$emit("close");
+        })
+        .catch(error => {
+          console.log(error);
+        });
     }
-}
+  }
+};
 </script>

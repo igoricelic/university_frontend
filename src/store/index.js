@@ -9,5 +9,5 @@ import schoolYear from "./schoolYear";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  modules: [students, proffesors, subjects, exams, schoolYear]
+  modules: { students, proffesors, subjects, exams, schoolYear }
 });

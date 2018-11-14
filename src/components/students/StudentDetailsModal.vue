@@ -74,31 +74,30 @@
 
 <script>
 export default {
-    props: {
-        currStudent: {
-            type: Object,
-            required: true
-        }
-    },
-    data () {
-        return {
-            dialog: true,
-            headers: [
-                { text: 'Subject name', value: 'subjectName', sortable: true },
-                { text: 'Proffesor Last name', value: 'lastName', sortable: true },
-                { text: 'Proffesor Fast name', value: 'firstName', sortable: true },
-                { text: 'Date', value: 'date', sortable: true },
-            ],
-            noDataText: 'There are no passed exams'
-        }
-    },
-    methods: {
-        closeModal () {
-            this.dialog = false
-            this.$emit('close')
-        }
-    },
-    mounted: function () {
+  props: {
+    currStudent: {
+      type: Object,
+      required: true
     }
-}
+  },
+  data() {
+    return {
+      dialog: true,
+      headers: [
+        { text: "Subject name", value: "subjectName", sortable: true },
+        { text: "Proffesor Last name", value: "lastName", sortable: true },
+        { text: "Proffesor Fast name", value: "firstName", sortable: true },
+        { text: "Date", value: "date", sortable: true }
+      ],
+      noDataText: "There are no passed exams"
+    };
+  },
+  methods: {
+    closeModal() {
+      this.dialog = false;
+      this.$emit("close");
+    }
+  },
+  mounted: function() {}
+};
 </script>

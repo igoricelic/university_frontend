@@ -36,7 +36,6 @@
                                 label="Start interval"
                                 prepend-icon="event"
                                 readonly
-                                clearable
                                 ></v-text-field>
                                 <v-date-picker v-model="filters.startIntervalDate" @input="startIntervalDateMenu = false; filter()"></v-date-picker>
                             </v-menu>
@@ -55,7 +54,6 @@
                                 label="End interval"
                                 prepend-icon="event"
                                 readonly
-                                clearable
                                 ></v-text-field>
                                 <v-date-picker v-model="filters.endIntervalDate" @input="endIntervalDateMenu = false; filter()"></v-date-picker>
                             </v-menu>
@@ -140,23 +138,22 @@ export default {
     },
     loadData() {
       let pageable = { page: this.page, size: this.size };
-      this.$store.dispatch("3/setPageable", pageable);
-      this.$store.dispatch("3/loadAll");
+      this.$store.dispatch("exams/setPageable", pageable);
+      this.$store.dispatch("exams/loadAll");
     },
     filter() {
-      console.log("pozvan");
-      // let path = `page=${this.page}&size=${this.size}&proffesor.lastName=${
-      //   this.filters.proffesorLastName
-      // }`;
-      // if (this.filters.startIntervalDate)
-      //   path = `${path}&dateAndTime=${this.filters.startIntervalDate}`;
-      // if (this.filters.endIntervalDate)
-      //   path = `${path}&dateAndTime=${this.filters.endIntervalDate}`;
-      // this.$store.dispatch("3/loadByPath", path);
+      let path = `page=${this.page}&size=${this.size}&proffesor.lastName=${
+        this.filters.proffesorLastName
+      }`;
+      if (this.filters.startIntervalDate)
+        path = `${path}&dateAndTime=${this.filters.startIntervalDate}`;
+      if (this.filters.endIntervalDate)
+        path = `${path}&dateAndTime=${this.filters.endIntervalDate}`;
+      this.$store.dispatch("exams/loadByPath", path);
     }
   },
   computed: {
-    ...mapGetters("3", {
+    ...mapGetters("exams", {
       exams: "getExams"
     })
   },

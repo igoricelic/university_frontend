@@ -92,7 +92,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("2", {
+    ...mapGetters("subjects", {
       subjects: "getSubjects",
       totalPages: "getTotalPages"
     })
@@ -104,7 +104,7 @@ export default {
     },
     save() {
       this.$store
-        .dispatch("1/createProffesor", this.proffesor)
+        .dispatch("proffesors/createProffesor", this.proffesor)
         .then(response => {
           this.$emit("close");
         })
@@ -127,8 +127,8 @@ export default {
     },
     loadData() {
       let pageable = { page: this.page - 1, size: this.size };
-      this.$store.dispatch("2/setPageable", pageable);
-      this.$store.dispatch("2/loadAll");
+      this.$store.dispatch("subjects/setPageable", pageable);
+      this.$store.dispatch("subjects/loadAll");
     }
   },
   mounted: function() {

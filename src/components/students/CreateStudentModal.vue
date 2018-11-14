@@ -61,30 +61,31 @@
 
 <script>
 export default {
-    data () {
-        return {
-            dialog: true,
-            student: {
-                index: '',
-                firstName: '',
-                lastName: ''
-            }
-        }
+  data() {
+    return {
+      dialog: true,
+      student: {
+        index: "",
+        firstName: "",
+        lastName: ""
+      }
+    };
+  },
+  methods: {
+    closeModal() {
+      this.dialog = false;
+      this.$emit("close");
     },
-    methods: {
-        closeModal () {
-            this.dialog = false
-            this.$emit('close')
-        },
-        save () {
-            this.$store.dispatch('0/createStudent', this.student)
-                .then(response => {
-                    this.$emit('close')
-                })
-                .catch(error => {
-                    console.log(error)
-                })
-        }
+    save() {
+      this.$store
+        .dispatch("students/createStudent", this.student)
+        .then(response => {
+          this.$emit("close");
+        })
+        .catch(error => {
+          console.log(error);
+        });
     }
-}
+  }
+};
 </script>

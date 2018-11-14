@@ -86,8 +86,8 @@ export default {
     },
     loadData() {
       let pageable = { page: this.page, size: this.size };
-      this.$store.dispatch("2/setPageable", pageable);
-      this.$store.dispatch("2/loadAll");
+      this.$store.dispatch("subjects/setPageable", pageable);
+      this.$store.dispatch("subjects/loadAll");
     },
     filter() {
       let params = {
@@ -95,11 +95,11 @@ export default {
         size: this.size,
         name: this.filters.name
       };
-      this.$store.dispatch("2/loadAll", params);
+      this.$store.dispatch("subjects/loadAll", params);
     }
   },
   computed: {
-    ...mapGetters("2", {
+    ...mapGetters("subjects", {
       subjects: "getSubjects"
     })
   },
