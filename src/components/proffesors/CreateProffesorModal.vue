@@ -66,9 +66,19 @@
             </v-layout>
 
             <v-layout row justify-center>
-            <v-flex md10>
-                <v-btn color="warning" @click="save">Save</v-btn>
-            </v-flex>
+                <v-flex md10>
+                    <v-btn color="warning" @click="save">Save</v-btn>
+                </v-flex>
+            </v-layout>
+            <v-layout row justify-center>
+                <v-flex md10>
+                    <v-alert
+                    :value="showError"
+                    type="error"
+                    >
+                        {{ errorMessage }}
+                    </v-alert>
+                </v-flex>
             </v-layout>
         </form>
         </v-card>
@@ -88,7 +98,9 @@ export default {
         subjects: []
       },
       page: 1,
-      size: 3
+      size: 3,
+      showError: false,
+      errorMessage: ""
     };
   },
   computed: {
@@ -109,7 +121,8 @@ export default {
           this.$emit("close");
         })
         .catch(error => {
-          console.log(error);
+          this.showError = true;
+          this.errorMessage = error.response.data.message;
         });
     },
     addSubject(index) {

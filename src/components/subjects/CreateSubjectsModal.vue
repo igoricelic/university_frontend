@@ -39,9 +39,19 @@
             
 
             <v-layout row justify-center>
-            <v-flex md10>
-                <v-btn color="primary" @click="save">Save</v-btn>
-            </v-flex>
+                <v-flex md10>
+                    <v-btn color="primary" @click="save">Save</v-btn>
+                </v-flex>
+            </v-layout>
+            <v-layout row justify-center>
+                <v-flex md10>
+                    <v-alert
+                    :value="showError"
+                    type="error"
+                    >
+                        {{ errorMessage }}
+                    </v-alert>
+                </v-flex>
             </v-layout>
         </form>
         </v-card>
@@ -56,7 +66,9 @@ export default {
       subject: {
         name: "",
         description: ""
-      }
+      },
+      showError: false,
+      errorMessage: ""
     };
   },
   methods: {
@@ -71,7 +83,8 @@ export default {
           this.$emit("close");
         })
         .catch(error => {
-          console.log(error);
+          this.showError = true;
+          this.errorMessage = error.response.data.message;
         });
     }
   }
